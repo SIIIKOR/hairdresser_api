@@ -2,6 +2,9 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 
 
+from hairdressers.models import Service, Hairdresser, Order
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
@@ -9,7 +12,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ServiceSerializer(serializers.HyperlinkedModelSerializer):
-    pass
+    class Meta:
+        model = Service
+        fields = ['url', 'name', 'price', 'estimated_time']
 
 
-# class Hair
+class HairdresserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Hairdresser
+        fields = ['url', 'name', 'surname', 'email']
+
+
+class OrderSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Order
+        fields = ['url', 'customer', 'hairdresser', 'service', 'start_time']

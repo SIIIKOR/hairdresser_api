@@ -17,7 +17,7 @@ class Hairdresser(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.PROTECT)
-    haidresser = models.ForeignKey(Hairdresser, on_delete=models.PROTECT)
+    hairdresser = models.ForeignKey(Hairdresser, on_delete=models.PROTECT)
     service = models.ForeignKey(Service, on_delete=models.PROTECT)
     # end time will be calculated via service estimated time.
     start_time = models.DateTimeField()
