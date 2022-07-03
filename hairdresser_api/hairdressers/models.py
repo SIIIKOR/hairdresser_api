@@ -9,7 +9,7 @@ class Service(models.Model):
     estimated_time = models.DurationField()
 
 
-class Haidresser(models.Model):
+class Hairdresser(models.Model):
     name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
     email = models.EmailField()
@@ -17,7 +17,7 @@ class Haidresser(models.Model):
 
 class Order(models.Model):
     customer = models.ForeignKey(User, on_delete=models.PROTECT)
-    haidresser = models.ForeignKey(Haidresser, on_delete=models.PROTECT)
+    haidresser = models.ForeignKey(Hairdresser, on_delete=models.PROTECT)
     service = models.ForeignKey(Service, on_delete=models.PROTECT)
     # end time will be calculated via service estimated time.
     start_time = models.DateTimeField()
