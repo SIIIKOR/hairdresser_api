@@ -1,4 +1,7 @@
+from django.urls import path
+
 from rest_framework import routers
+from rest_framework.authtoken.views import obtain_auth_token
 
 from hairdressers import views
 
@@ -11,4 +14,5 @@ router.register(r'services', views.ServiceViewSet)
 router.register(r'hairdressers', views.HairdresserViewSet)
 router.register(r'orders', views.OrderViewSet)
 
-urlpatterns = router.urls
+urlpatterns = [path('api-token-auth/', obtain_auth_token)]
+urlpatterns += router.urls

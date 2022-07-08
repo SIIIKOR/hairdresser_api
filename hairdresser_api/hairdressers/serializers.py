@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
+
 from rest_framework import serializers
 
-from hairdressers.models import Service, Hairdresser, Order
+from hairdressers import models
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -14,7 +15,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class ServiceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Service
+        model = models.Service
         fields = ['url', 'name', 'price', 'estimated_time']
         extra_kwargs = {
             'url': {'view_name': 'hairdressers:service-detail'},
@@ -23,7 +24,7 @@ class ServiceSerializer(serializers.HyperlinkedModelSerializer):
 
 class HairdresserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Hairdresser
+        model = models.Hairdresser
         fields = ['url', 'name', 'surname', 'email']
         extra_kwargs = {
             'url': {'view_name': 'hairdressers:hairdresser-detail'},
@@ -32,7 +33,7 @@ class HairdresserSerializer(serializers.HyperlinkedModelSerializer):
 
 class OrderSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Order
+        model = models.Order
         fields = ['url', 'customer', 'hairdresser', 'service', 'start_time']
         extra_kwargs = {
             'url': {'view_name': 'hairdressers:order-detail'},

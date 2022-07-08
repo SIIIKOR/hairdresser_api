@@ -4,15 +4,21 @@ from datetime import timedelta
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from hairdressers.models import Service, Hairdresser, Order
+from rest_framework.authtoken.models import Token
 
-for i in range(100):
+from hairdressers import models
+
+
+for i in range(40):
     user = User.objects.create_user( # type: ignore
         username=f"user{i}",
         email=f"user{i}@gmail.com",
         password=f"1234"
     )
-    service = Service.objects.create(
+
+    Token.objects.get_or_create(user=user)
+
+    service = models.Service.objects.create(
         name = f"haircut{i}",
         price = randint(0, 99999)/100,
         estimated_time = timedelta(
@@ -21,12 +27,12 @@ for i in range(100):
             )
         )
     )
-    hairdresser = Hairdresser.objects.create(
+    hairdresser = models.Hairdresser.objects.create(
         name = f"hairdresser{i}",
         surname = f"surname{i}",
         email = f"hairdresser{i}@gmail.com"
     )
-    order = Order.objects.create(
+    order = models.Order.objects.create(
         customer=user,
         hairdresser=hairdresser,
         service=service,
