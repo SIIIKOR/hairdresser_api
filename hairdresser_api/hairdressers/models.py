@@ -6,6 +6,7 @@ from django.dispatch import receiver
 
 from rest_framework.authtoken.models import Token
 
+
 # Create your models here.
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -26,7 +27,7 @@ class Hairdresser(models.Model):
 
 
 class Order(models.Model):
-    customer = models.ForeignKey(User, on_delete=models.PROTECT)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
     hairdresser = models.ForeignKey(Hairdresser, on_delete=models.PROTECT)
     service = models.ForeignKey(Service, on_delete=models.PROTECT)
     # end time will be calculated via service estimated time.

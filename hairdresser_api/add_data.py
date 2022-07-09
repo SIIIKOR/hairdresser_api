@@ -33,7 +33,7 @@ for i in range(40):
         email = f"hairdresser{i}@gmail.com"
     )
     order = models.Order.objects.create(
-        customer=user,
+        user=user,
         hairdresser=hairdresser,
         service=service,
         start_time=timezone.now()
