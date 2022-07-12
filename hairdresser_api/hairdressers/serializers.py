@@ -80,7 +80,7 @@ class UserOrderSerializer(serializers.HyperlinkedModelSerializer):
                 output_field=DateTimeField()
             )
         ).filter(
-            Q(start_time__range=(start_time, end_time))|
+            Q(start_time__range=(start_time, end_time)) |
             Q(end_time__range=(start_time, end_time))
         ).count()
         if overlapping_orders_count != 0:
