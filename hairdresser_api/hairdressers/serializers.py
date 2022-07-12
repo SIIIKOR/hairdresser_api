@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
-from django.contrib.auth.models import User
+from django.db.models import ExpressionWrapper, F, DateTimeField, Q
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
@@ -15,6 +15,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         extra_kwargs = {
             'url': {'view_name': 'hairdressers:user-detail'},
         }
+
 
 class ServiceSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -44,6 +45,49 @@ class OrderSerializer(serializers.HyperlinkedModelSerializer):
             'hairdresser': {'view_name': 'hairdressers:hairdresser-detail'},
             'service': {'view_name': 'hairdressers:service-detail'}
         }
+
+
+class UserOrderSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = models.Order
+        fields = ['url', 'user', 'hairdresser', 'service', 'start_time']
+        extra_kwargs = {
+            'url': {'view_name': 'hairdressers:order-detail'},
+            'user': {'view_name': 'hairdressers:user-detail', 'required':False},
+            'hairdresser': {'view_name': 'hairdressers:hairdresser-detail'},
+            'service': {'view_name': 'hairdressers:service-detail'}
+        }
+
+    def validate(self, data):
+        # User who submited post request.
+        request_user = self.context.get('request').user # type:ignore
+        # User submited in post request. if none request user is used.
+        submited_user = data.get('user', request_user)
+        if submited_user != request_user:
+            raise serializers.ValidationError("Provided user is not you.")
+        
+        start_time = data.get('start_time')
+        end_time = start_time + data.get('service').estimated_time
+
+        # Query to check if selected start_time and service by user creates
+        # time frame which is not occupied by other user's order.
+        overlapping_orders_count = models.Order.objects.filter(
+            user=self.context.get('request').user, # type:ignore
+            hairdresser=data.get('hairdresser')
+        ).annotate(
+            end_time = ExpressionWrapper(
+                F('start_time')+F('service__estimated_time'), 
+                output_field=DateTimeField()
+            )
+        ).filter(
+            Q(start_time__range=(start_time, end_time))|
+            Q(end_time__range=(start_time, end_time))
+        ).count()
+        if overlapping_orders_count != 0:
+            raise serializers.ValidationError(
+                "This time is occupied by some other user."
+            )
+        return data
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):

@@ -19,11 +19,17 @@ class Service(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
     estimated_time = models.DurationField()
 
+    class Meta:
+        ordering = ['id']
+
 
 class Hairdresser(models.Model):
     name = models.CharField(max_length=30)
     surname = models.CharField(max_length=30)
     email = models.EmailField()
+
+    class Meta:
+        ordering = ['id']
 
 
 class Order(models.Model):
@@ -32,3 +38,6 @@ class Order(models.Model):
     service = models.ForeignKey(Service, on_delete=models.PROTECT)
     # end time will be calculated via service estimated time.
     start_time = models.DateTimeField()
+
+    class Meta:
+        ordering = ['id']
