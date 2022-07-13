@@ -82,15 +82,15 @@ class OrderViewSet(viewsets.ModelViewSet):
             serializer.save()
 
 
-class OccupiedOrderDateView(generics.ListAPIView):
+class OrderBookedDateView(generics.ListAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = serializers.OccupiedOrderDateSerializer
+    serializer_class = serializers.OrderBookedDateViewSerializer
 
     def get_queryset(self):
         return models.Order.objects.all().filter(
             hairdresser = get_object_or_404(
-                models.Hairdresser, pk=self.kwargs.get("id")
+                models.Hairdresser, pk=self.kwargs.get("hairdresser_id")
             )
         ).annotate(
             end_time = ExpressionWrapper(

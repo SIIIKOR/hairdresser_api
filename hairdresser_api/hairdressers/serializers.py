@@ -90,7 +90,7 @@ class UserOrderSerializer(serializers.HyperlinkedModelSerializer):
         return data
 
 
-class OccupiedOrderDateSerializer(serializers.HyperlinkedModelSerializer):
+class OrderBookedDateViewSerializer(serializers.HyperlinkedModelSerializer):
     end_time = serializers.DateTimeField()
 
     class Meta:
