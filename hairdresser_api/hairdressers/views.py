@@ -1,4 +1,7 @@
 from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+from django.db.models import ExpressionWrapper, F, DateTimeField
+from django.utils import timezone
 
 from rest_framework import viewsets, generics, authentication, permissions
 
@@ -77,6 +80,26 @@ class OrderViewSet(viewsets.ModelViewSet):
             serializer.save(user=self.request.user)
         else: # Admin must provide user on post request.
             serializer.save()
+
+
+class OccupiedOrderDateView(generics.ListAPIView):
+    authentication_classes = [authentication.TokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = serializers.OccupiedOrderDateSerializer
+
+    def get_queryset(self):
+        return models.Order.objects.all().filter(
+            hairdresser = get_object_or_404(
+                models.Hairdresser, pk=self.kwargs.get("id")
+            )
+        ).annotate(
+            end_time = ExpressionWrapper(
+                F('start_time')+F('service__estimated_time'), 
+                output_field=DateTimeField()
+            )
+        ).filter(
+            start_time__gt=timezone.now()
+        ).order_by('start_time')
 
 
 class RegisterView(generics.CreateAPIView):

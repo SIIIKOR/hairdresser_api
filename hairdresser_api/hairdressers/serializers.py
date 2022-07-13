@@ -90,6 +90,17 @@ class UserOrderSerializer(serializers.HyperlinkedModelSerializer):
         return data
 
 
+class OccupiedOrderDateSerializer(serializers.HyperlinkedModelSerializer):
+    end_time = serializers.DateTimeField()
+
+    class Meta:
+        model = models.Order
+        fields = ['url', 'start_time', 'end_time']
+        extra_kwargs = {
+            'url': {'view_name': 'hairdressers:order-detail'}
+        }
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
         required=True,

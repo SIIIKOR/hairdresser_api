@@ -17,5 +17,6 @@ router.register(r'orders', views.OrderViewSet, basename="order")
 urlpatterns = [
     path('api-token-auth/', obtain_auth_token),
     path('register/', views.RegisterView.as_view(), name='register-api'),
+    path('occupied-orders/<int:id>', views.OccupiedOrderDateView.as_view(), name='occupied-orders-api'),
 ]
 urlpatterns += router.urls
