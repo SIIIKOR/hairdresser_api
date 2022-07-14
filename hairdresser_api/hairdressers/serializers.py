@@ -59,11 +59,11 @@ class UserOrderSerializer(serializers.HyperlinkedModelSerializer):
         }
 
     def validate(self, data):
-        # User who submited post request.
+        # User who submitted post request.
         request_user = self.context.get('request').user # type:ignore
-        # User submited in post request. if none request user is used.
-        submited_user = data.get('user', request_user)
-        if submited_user != request_user:
+        # User submitted in post request. if none request user is used.
+        submitted_user = data.get('user', request_user)
+        if submitted_user != request_user:
             raise serializers.ValidationError("Provided user is not you.")
         
         start_time = data.get('start_time')
